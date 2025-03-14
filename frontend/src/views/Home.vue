@@ -49,22 +49,40 @@
         </div>
 
         <div class="analysis-content">
-          {{ result.analysis.general }}
+          <div class="total-grid">{{ result.analysis.general }}</div>
         </div>
       </div>
 
-      <div class="history-section">
-        <h2>历史记录</h2>
-        <div class="history-list">
+      <div
+        class="history-section"
+        @mouseenter="pauseScroll"
+        @mouseleave="resumeScroll"
+        ref="historySection"
+      >
+        <div class="history-list" ref="historyList">
           <div
-            v-for="(record, index) in historyRecords"
-            :key="index"
-            class="history-item"
+            class="history-list-inner"
+            :class="{
+              paused: !isScrolling,
+            }"
+            @animationiteration="handleAnimationIteration"
           >
-            <span class="history-name">{{ record.fullName }}</span>
-            <div class="history-score">
-              <span class="score">{{ record.score }}分</span>
-              <span class="level">{{ record.level }}</span>
+            <div
+              v-for="(record, index) in displayRecords"
+              :key="record.id"
+              class="history-item"
+              :class="{ highlight: isHighlighted(index) }"
+              :ref="
+                (el) => {
+                  if (el) itemRefs[index] = el;
+                }
+              "
+            >
+              <span class="history-name">{{ record.fullName }}</span>
+              <div class="history-score">
+                <span class="score">{{ record.score }}分</span>
+                <span class="level">{{ record.level }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -74,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, watch, nextTick, onUnmounted } from "vue";
 
 interface Analysis {
   general: string;
@@ -83,6 +101,7 @@ interface Analysis {
 interface AnalysisResult {
   totalScore: number;
   luckLevel: string;
+  zongGe: string;
   analysis: Analysis;
 }
 
@@ -103,6 +122,12 @@ const result = ref<AnalysisResult | null>(null);
 const loading = ref(false);
 const error = ref("");
 const historyRecords = ref<HistoryRecord[]>([]);
+const isScrolling = ref(true);
+const displayRecords = ref<HistoryRecord[]>([]);
+const historyList = ref<HTMLElement | null>(null);
+const topItemIndex = ref(-1);
+const itemRefs = ref<{ [key: number]: HTMLElement }>({});
+const highlightedIndex = ref(-1);
 
 const isValid = computed(() => {
   return form.value.surname && form.value.givenName;
@@ -136,6 +161,7 @@ const analyzeName = async () => {
       const resultData = {
         totalScore: data.data.score.average,
         luckLevel: data.data.score.luckLevel,
+        zongGe: data.data.fiveGrid.numbers.zongGe,
         analysis: {
           general: data.data.fiveGrid.rules.zongGe.general_meaning,
         },
@@ -171,6 +197,127 @@ const analyzeName = async () => {
 setTimeout(() => {
   surnameInput.value?.focus();
 }, 100);
+
+const shouldScroll = computed(() => {
+  return historyRecords.value.length > 5;
+});
+
+const pauseScroll = () => {
+  isScrolling.value = false;
+  stopHighlightTracking();
+};
+
+const resumeScroll = () => {
+  if (shouldScroll.value) {
+    isScrolling.value = true;
+    startHighlightTracking();
+  }
+};
+
+const updateDisplayRecords = () => {
+  if (shouldScroll.value) {
+    displayRecords.value = [...historyRecords.value, ...historyRecords.value];
+  } else {
+    displayRecords.value = historyRecords.value;
+  }
+};
+
+onMounted(() => {
+  updateDisplayRecords();
+  startHighlightTracking();
+});
+
+watch(
+  historyRecords,
+  (newRecords: HistoryRecord[]) => {
+    updateDisplayRecords();
+    if (newRecords.length > 0) {
+      nextTick(() => {
+        const historySection = document.querySelector(".history-section");
+        if (historySection) {
+          historySection.scrollTop = 0;
+        }
+      });
+    }
+  },
+  { deep: true }
+);
+
+// 检查元素是否在顶部位置
+const isItemAtTop = (index: number) => {
+  if (!historyList.value) return false;
+  const itemHeight = 60; // 预估每个条目的高度
+  const scrollTop = historyList.value.scrollTop;
+  const itemPosition = index * itemHeight;
+  const tolerance = 10; // 允许的误差范围
+
+  return Math.abs(scrollTop - itemPosition) <= tolerance;
+};
+
+// 处理滚动事件
+const handleScroll = () => {
+  if (!historyList.value) return;
+  const scrollTop = historyList.value.scrollTop;
+  const itemHeight = 60; // 预估每个条目的高度
+  const currentTopIndex = Math.round(scrollTop / itemHeight);
+  topItemIndex.value = currentTopIndex;
+};
+
+// 检查元素是否应该高亮
+const isHighlighted = (index: number) => {
+  return index === highlightedIndex.value;
+};
+
+// 更新高亮索引
+const updateHighlight = () => {
+  if (!historyList.value) return;
+
+  const containerRect = historyList.value.getBoundingClientRect();
+  const topPosition = containerRect.top;
+
+  // 找到最接近顶部的元素
+  let closestIndex = -1;
+  let minDistance = Infinity;
+
+  Object.entries(itemRefs.value).forEach(([index, element]) => {
+    const rect = element.getBoundingClientRect();
+    const distance = Math.abs(rect.top - topPosition);
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestIndex = parseInt(index);
+    }
+  });
+
+  highlightedIndex.value = closestIndex;
+};
+
+// 监听动画帧
+let animationFrameId: number;
+const startHighlightTracking = () => {
+  const track = () => {
+    updateHighlight();
+    animationFrameId = requestAnimationFrame(track);
+  };
+  track();
+};
+
+// 停止监听
+const stopHighlightTracking = () => {
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+  }
+};
+
+// 处理动画循环
+const handleAnimationIteration = () => {
+  // 重置高亮状态
+  highlightedIndex.value = -1;
+};
+
+// 在组件卸载时清理
+onUnmounted(() => {
+  stopHighlightTracking();
+});
 </script>
 
 <style scoped>
@@ -226,16 +373,19 @@ setTimeout(() => {
   display: flex;
   gap: 0.8rem;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .input-group {
   display: flex;
   gap: 0.8rem;
   flex: 1;
+  min-width: 200px;
 }
 
 .input-group input {
   width: 5em;
+  min-width: 60px;
   padding: 0.9rem;
   font-size: 1.2rem;
   border: 2px solid rgba(255, 255, 255, 0.2);
@@ -266,6 +416,8 @@ button {
   font-weight: 600;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+  width: 100%;
+  max-width: 120px;
 }
 
 button:hover:not(:disabled) {
@@ -285,12 +437,12 @@ button:disabled {
 .result-section {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.6rem;
 }
 
 .score-card {
   background: rgba(255, 255, 255, 0.98);
-  padding: 1.2rem;
+  padding: 0.8rem;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -321,23 +473,23 @@ button:disabled {
 }
 
 .total-score .number {
-  font-size: 3.2rem;
+  font-size: 2.6rem;
   font-weight: bold;
   color: #2c3e50;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .total-score .label {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: #7f8c8d;
   margin-left: 0.3rem;
   font-weight: 500;
 }
 
 .luck-level {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: bold;
-  padding: 0.4rem 1.2rem;
+  padding: 0.3rem 1rem;
   border-radius: 20px;
   background: #3498db;
   color: white;
@@ -346,15 +498,16 @@ button:disabled {
 
 .analysis-content {
   background: rgba(255, 255, 255, 0.98);
-  padding: 1.4rem;
+  padding: 1rem;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  line-height: 1.8;
-  font-size: 1.1rem;
+  line-height: 1.6;
+  font-size: 1rem;
   color: #2c3e50;
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  max-height: 80px;
 }
 
 .analysis-content::before {
@@ -369,6 +522,9 @@ button:disabled {
 
 .history-section {
   padding: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  height: 300px;
 }
 
 .history-section h2 {
@@ -387,24 +543,152 @@ button:disabled {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.history-list-inner {
+  animation: scrollUpAnimation 20s linear infinite;
+  animation-play-state: running;
+}
+
+.history-list-inner.paused {
+  animation-play-state: paused;
+}
+
+@keyframes scrollUpAnimation {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
 .history-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.2rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  transform-origin: center left;
 }
 
-.history-item:hover {
-  background-color: rgba(52, 152, 219, 0.05);
-  transform: translateX(4px);
+.history-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #fff8f0 0%, #fff 100%);
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
 }
 
-.history-item:last-child {
-  border-bottom: none;
+.history-item.highlight {
+  transform: scale(1.04) translateX(8px);
+  box-shadow: 0 8px 24px rgba(230, 126, 34, 0.15);
+  z-index: 2;
+  border-radius: 12px;
+  margin: 0.4rem;
+  border: 1px solid rgba(230, 126, 34, 0.2);
+  padding: 1.1rem 1.3rem;
 }
 
+.history-item.highlight::before {
+  opacity: 1;
+}
+
+/* 高亮状态下的名字样式 */
+.history-item .history-name {
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.1rem;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.history-item.highlight .history-name {
+  font-size: 1.2rem;
+  color: #c0392b;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* 高亮状态下的分数样式 */
+.history-item .history-score .score {
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.history-item.highlight .history-score .score {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #e67e22;
+  text-shadow: 0 1px 2px rgba(230, 126, 34, 0.2);
+}
+
+/* 高亮状态下的运势等级样式 */
+.history-item .history-score .level {
+  font-size: 1rem;
+  color: #3498db;
+  font-weight: 600;
+  padding: 0.3rem 0.8rem;
+  background: rgba(52, 152, 219, 0.1);
+  border-radius: 20px;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.history-item.highlight .history-score .level {
+  font-size: 1.05rem;
+  color: white;
+  font-weight: 700;
+  padding: 0.4rem 1.2rem;
+  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+  box-shadow: 0 4px 12px rgba(230, 126, 34, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+/* 添加柔和的发光效果 */
+.history-item::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+  border-radius: 12px;
+  z-index: -2;
+  opacity: 0;
+  filter: blur(6px);
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scale(1.02);
+}
+
+.history-item.highlight::after {
+  opacity: 0.08;
+  animation: gentleGlow 3s ease-in-out infinite;
+}
+
+@keyframes gentleGlow {
+  0%,
+  100% {
+    opacity: 0.08;
+    transform: scale(1.02);
+  }
+  50% {
+    opacity: 0.12;
+    transform: scale(1.03);
+  }
+}
+
+/* 普通状态的样式保持不变 */
 .history-name {
   font-size: 1.1rem;
   color: #2c3e50;
@@ -454,6 +738,77 @@ button:disabled {
   }
   100% {
     background-position: 200% 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.total-grid {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #333;
+  padding: 0.8rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 0;
+  overflow-y: auto;
+  max-height: 60px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(52, 152, 219, 0.5) transparent;
+}
+
+.total-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.total-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.total-grid::-webkit-scrollbar-thumb {
+  background-color: rgba(52, 152, 219, 0.5);
+  border-radius: 3px;
+}
+
+@media (max-width: 480px) {
+  .input-wrapper {
+    flex-direction: column;
+  }
+
+  .input-group {
+    width: 100%;
+    justify-content: center;
+  }
+
+  button {
+    max-width: 100%;
+  }
+
+  .score-wrapper {
+    gap: 1rem;
+  }
+
+  .total-score .number {
+    font-size: 2.2rem;
+  }
+
+  .total-score .label {
+    font-size: 1rem;
+  }
+
+  .luck-level {
+    font-size: 1rem;
+    padding: 0.3rem 0.8rem;
   }
 }
 </style> 
