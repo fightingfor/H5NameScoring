@@ -1,0 +1,213 @@
+{
+    "人格": [
+        {
+            "strokes": 12,
+            "score": 85,
+            "luck_level": "吉",
+            "five_elements": "水",
+            "general_meaning": "人格数理为12，五行属水，性格聪颖，思维敏捷，适应力强。",
+            "career_meaning": "适合从事研究、技术、创新等工作，具有分析能力。",
+            "wealth_meaning": "财运平稳，投资谨慎，收益稳定。",
+            "marriage_meaning": "重视家庭，感情专一，但需多沟通。",
+            "health_meaning": "注意泌尿系统，保持充足休息。"
+        },
+        {
+            "strokes": 13,
+            "score": 90,
+            "luck_level": "大吉",
+            "five_elements": "火",
+            "general_meaning": "人格数理为13，五行属火，性格开朗，领导能力强，具有感染力。",
+            "career_meaning": "适合从事管理、销售、领导等工作，具有决策能力。",
+            "wealth_meaning": "财运旺盛，善于把握机会，投资眼光准。",
+            "marriage_meaning": "感情丰富，家庭和睦，人际关系好。",
+            "health_meaning": "注意心脑血管，保持运动习惯。"
+        },
+        {
+            "strokes": 14,
+            "score": 85,
+            "luck_level": "吉",
+            "five_elements": "土",
+            "general_meaning": "人格数理为14，五行属土，性格稳重，做事认真，责任心强。",
+            "career_meaning": "适合从事行政、管理、财务等工作，组织能力强。",
+            "wealth_meaning": "财运稳定，善于积累，投资保守。",
+            "marriage_meaning": "感情专一，家庭和睦，生活规律。",
+            "health_meaning": "注意消化系统，保持规律饮食。"
+        },
+        {
+            "strokes": 15,
+            "score": 90,
+            "luck_level": "大吉",
+            "five_elements": "金",
+            "general_meaning": "人格数理为15，五行属金，性格果断，意志坚定，领导才能强。",
+            "career_meaning": "适合从事管理、决策、创业等工作，执行力强。",
+            "wealth_meaning": "财运优异，投资准确，善于理财。",
+            "marriage_meaning": "感情稳定，家庭美满，但需注意沟通。",
+            "health_meaning": "注意呼吸系统，保持适度运动。"
+        },
+        {
+            "strokes": 16,
+            "score": 85,
+            "luck_level": "吉",
+            "five_elements": "水",
+            "general_meaning": "人格数理为16，五行属水，性格灵活，思维敏捷，创新能力强。",
+            "career_meaning": "适合从事研发、创新、技术等工作，学习能力强。",
+            "wealth_meaning": "财运平稳，投资谨慎，收益稳定。",
+            "marriage_meaning": "感情细腻，重视家庭，但需多沟通。",
+            "health_meaning": "注意泌尿系统，保持充足休息。"
+        },
+        {
+            "strokes": 17,
+            "score": 90,
+            "luck_level": "大吉",
+            "five_elements": "木",
+            "general_meaning": "人格数理为17，五行属木，性格开朗，思维活跃，创造力强。",
+            "career_meaning": "适合从事创意、艺术、设计等工作，具有创新能力。",
+            "wealth_meaning": "财运旺盛，投资眼光准，但需控制风险。",
+            "marriage_meaning": "感情丰富，家庭幸福，人缘好。",
+            "health_meaning": "注意肝胆系统，保持规律作息。"
+        },
+        {
+            "strokes": 18,
+            "score": 85,
+            "luck_level": "吉",
+            "five_elements": "土",
+            "general_meaning": "人格数理为18，五行属土，性格稳重，做事踏实，责任心强。",
+            "career_meaning": "适合从事管理、行政、财务等工作，组织能力强。",
+            "wealth_meaning": "财运稳定，善于积累，投资谨慎。",
+            "marriage_meaning": "感情专一，家庭和睦，生活规律。",
+            "health_meaning": "注意消化系统，保持规律饮食。"
+        },
+        {
+            "strokes": 19,
+            "score": 90,
+            "luck_level": "大吉",
+            "five_elements": "火",
+            "general_meaning": "人格数理为19，五行属火，性格开朗，领导能力强，具有感染力。",
+            "career_meaning": "适合从事管理、销售、领导等工作，具有决策能力。",
+            "wealth_meaning": "财运旺盛，善于把握机会，投资眼光准。",
+            "marriage_meaning": "感情丰富，家庭和睦，人际关系好。",
+            "health_meaning": "注意心脑血管，保持运动习惯。"
+        },
+        {
+            "strokes": 20,
+            "score": 85,
+            "luck_level": "吉",
+            "five_elements": "金",
+            "general_meaning": "人格数理为20，五行属金，性格果断，意志坚定，领导才能强。",
+            "career_meaning": "适合从事管理、决策、创业等工作，执行力强。",
+            "wealth_meaning": "财运优异，投资准确，善于理财。",
+            "marriage_meaning": "感情稳定，家庭美满，但需注意沟通。",
+            "health_meaning": "注意呼吸系统，保持适度运动。"
+        },
+        {
+            "strokes": 21,
+            "score": 90,
+            "luck_level": "大吉",
+            "five_elements": "水",
+            "general_meaning": "人格数理为21，五行属水，性格灵活，思维敏捷，创新能力强。",
+            "career_meaning": "适合从事研发、创新、技术等工作，学习能力强。",
+            "wealth_meaning": "财运平稳，投资谨慎，收益稳定。",
+            "marriage_meaning": "感情细腻，重视家庭，但需多沟通。",
+            "health_meaning": "注意泌尿系统，保持充足休息。"
+        },
+        {
+            "strokes": 22,
+            "score": 85,
+            "luck_level": "吉",
+            "five_elements": "木",
+            "general_meaning": "人格数理为22，五行属木，性格开朗，思维活跃，创造力强。",
+            "career_meaning": "适合从事创意、艺术、设计等工作，具有创新能力。",
+            "wealth_meaning": "财运旺盛，投资眼光准，但需控制风险。",
+            "marriage_meaning": "感情丰富，家庭幸福，人缘好。",
+            "health_meaning": "注意肝胆系统，保持规律作息。"
+        },
+        {
+            "strokes": 23,
+            "score": 90,
+            "luck_level": "大吉",
+            "five_elements": "火",
+            "general_meaning": "人格数理为23，五行属火，性格开朗，领导能力强，具有感染力。",
+            "career_meaning": "适合从事管理、销售、领导等工作，具有决策能力。",
+            "wealth_meaning": "财运旺盛，善于把握机会，投资眼光准。",
+            "marriage_meaning": "感情丰富，家庭和睦，人际关系好。",
+            "health_meaning": "注意心脑血管，保持运动习惯。"
+        },
+        {
+            "strokes": 24,
+            "score": 85,
+            "luck_level": "吉",
+            "five_elements": "土",
+            "general_meaning": "人格数理为24，五行属土，性格稳重，做事踏实，责任心强。",
+            "career_meaning": "适合从事管理、行政、财务等工作，组织能力强。",
+            "wealth_meaning": "财运稳定，善于积累，投资谨慎。",
+            "marriage_meaning": "感情专一，家庭和睦，生活规律。",
+            "health_meaning": "注意消化系统，保持规律饮食。"
+        },
+        {
+            "strokes": 25,
+            "score": 90,
+            "luck_level": "大吉",
+            "five_elements": "金",
+            "general_meaning": "人格数理为25，五行属金，性格果断，意志坚定，领导才能强。",
+            "career_meaning": "适合从事管理、决策、创业等工作，执行力强。",
+            "wealth_meaning": "财运优异，投资准确，善于理财。",
+            "marriage_meaning": "感情稳定，家庭美满，但需注意沟通。",
+            "health_meaning": "注意呼吸系统，保持适度运动。"
+        },
+        {
+            "strokes": 26,
+            "score": 85,
+            "luck_level": "吉",
+            "five_elements": "水",
+            "general_meaning": "人格数理为26，五行属水，性格灵活，思维敏捷，创新能力强。",
+            "career_meaning": "适合从事研发、创新、技术等工作，学习能力强。",
+            "wealth_meaning": "财运平稳，投资谨慎，收益稳定。",
+            "marriage_meaning": "感情细腻，重视家庭，但需多沟通。",
+            "health_meaning": "注意泌尿系统，保持充足休息。"
+        },
+        {
+            "strokes": 27,
+            "score": 90,
+            "luck_level": "大吉",
+            "five_elements": "木",
+            "general_meaning": "人格数理为27，五行属木，性格开朗，思维活跃，创造力强。",
+            "career_meaning": "适合从事创意、艺术、设计等工作，具有创新能力。",
+            "wealth_meaning": "财运旺盛，投资眼光准，但需控制风险。",
+            "marriage_meaning": "感情丰富，家庭幸福，人缘好。",
+            "health_meaning": "注意肝胆系统，保持规律作息。"
+        },
+        {
+            "strokes": 28,
+            "score": 85,
+            "luck_level": "吉",
+            "five_elements": "土",
+            "general_meaning": "人格数理为28，五行属土，性格稳重，做事踏实，责任心强。",
+            "career_meaning": "适合从事管理、行政、财务等工作，组织能力强。",
+            "wealth_meaning": "财运稳定，善于积累，投资谨慎。",
+            "marriage_meaning": "感情专一，家庭和睦，生活规律。",
+            "health_meaning": "注意消化系统，保持规律饮食。"
+        },
+        {
+            "strokes": 29,
+            "score": 90,
+            "luck_level": "大吉",
+            "five_elements": "火",
+            "general_meaning": "人格数理为29，五行属火，性格开朗，领导能力强，具有感染力。",
+            "career_meaning": "适合从事管理、销售、领导等工作，具有决策能力。",
+            "wealth_meaning": "财运旺盛，善于把握机会，投资眼光准。",
+            "marriage_meaning": "感情丰富，家庭和睦，人际关系好。",
+            "health_meaning": "注意心脑血管，保持运动习惯。"
+        },
+        {
+            "strokes": 30,
+            "score": 85,
+            "luck_level": "吉",
+            "five_elements": "金",
+            "general_meaning": "人格数理为30，五行属金，性格果断，意志坚定，领导才能强。",
+            "career_meaning": "适合从事管理、决策、创业等工作，执行力强。",
+            "wealth_meaning": "财运优异，投资准确，善于理财。",
+            "marriage_meaning": "感情稳定，家庭美满，但需注意沟通。",
+            "health_meaning": "注意呼吸系统，保持适度运动。"
+        }
+    ]
+}

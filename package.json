@@ -1,0 +1,29 @@
+{
+  "name": "name-scoring-api",
+  "version": "1.0.0",
+  "description": "姓名五格分析系统 API",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "chinese",
+    "name",
+    "scoring",
+    "fengshui"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.6.5"
+  }
+}
