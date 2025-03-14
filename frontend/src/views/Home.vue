@@ -13,7 +13,7 @@
                 v-model="form.surname"
                 type="text"
                 placeholder="姓"
-                maxlength="2"
+                maxlength="3"
                 @keyup.enter="focusGivenName"
                 ref="surnameInput"
                 :disabled="loading"
