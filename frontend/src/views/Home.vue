@@ -202,18 +202,6 @@ const shouldScroll = computed(() => {
   return historyRecords.value.length > 5;
 });
 
-const pauseScroll = () => {
-  isScrolling.value = false;
-  stopHighlightTracking();
-};
-
-const resumeScroll = () => {
-  if (shouldScroll.value) {
-    isScrolling.value = true;
-    startHighlightTracking();
-  }
-};
-
 const updateDisplayRecords = () => {
   if (shouldScroll.value) {
     displayRecords.value = [...historyRecords.value, ...historyRecords.value];
@@ -224,7 +212,10 @@ const updateDisplayRecords = () => {
 
 onMounted(() => {
   updateDisplayRecords();
-  startHighlightTracking();
+  if (shouldScroll.value) {
+    isScrolling.value = true;
+    startHighlightTracking();
+  }
 });
 
 watch(
@@ -242,6 +233,18 @@ watch(
   },
   { deep: true }
 );
+
+const pauseScroll = () => {
+  isScrolling.value = false;
+  stopHighlightTracking();
+};
+
+const resumeScroll = () => {
+  if (shouldScroll.value) {
+    isScrolling.value = true;
+    startHighlightTracking();
+  }
+};
 
 // 检查元素是否在顶部位置
 const isItemAtTop = (index: number) => {
@@ -535,17 +538,21 @@ button:disabled {
 }
 
 .history-list {
-  background: rgba(255, 255, 255, 0.98);
+  background: #fff;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   position: relative;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.8rem;
+  height: 100%;
 }
 
 .history-list-inner {
   animation: scrollUpAnimation 20s linear infinite;
   animation-play-state: running;
+  padding-bottom: 0.8rem;
+  will-change: transform;
 }
 
 .history-list-inner.paused {
@@ -565,155 +572,83 @@ button:disabled {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.2rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  z-index: 1;
+  padding: 0.8rem;
+  border-radius: 8px;
   background: #fff;
-  transform-origin: center left;
+  margin-bottom: 0.8rem;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  will-change: transform;
 }
 
-.history-item::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, #fff8f0 0%, #fff 100%);
-  border-radius: 12px;
-  opacity: 0;
-  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: -1;
+.history-item:hover {
+  background: rgba(52, 152, 219, 0.05);
+  border-color: rgba(52, 152, 219, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .history-item.highlight {
-  transform: scale(1.04) translateX(8px);
-  box-shadow: 0 8px 24px rgba(230, 126, 34, 0.15);
-  z-index: 2;
-  border-radius: 12px;
-  margin: 0.4rem;
-  border: 1px solid rgba(230, 126, 34, 0.2);
-  padding: 1.1rem 1.3rem;
-}
-
-.history-item.highlight::before {
-  opacity: 1;
-}
-
-/* 高亮状态下的名字样式 */
-.history-item .history-name {
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 1.1rem;
-  color: #2c3e50;
+  background: rgba(52, 152, 219, 0.1);
+  border-color: rgba(52, 152, 219, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   font-weight: 500;
 }
 
-.history-item.highlight .history-name {
-  font-size: 1.2rem;
-  color: #c0392b;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-/* 高亮状态下的分数样式 */
-.history-item .history-score .score {
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-.history-item.highlight .history-score .score {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: #e67e22;
-  text-shadow: 0 1px 2px rgba(230, 126, 34, 0.2);
-}
-
-/* 高亮状态下的运势等级样式 */
-.history-item .history-score .level {
-  font-size: 1rem;
-  color: #3498db;
-  font-weight: 600;
-  padding: 0.3rem 0.8rem;
-  background: rgba(52, 152, 219, 0.1);
-  border-radius: 20px;
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.history-item.highlight .history-score .level {
-  font-size: 1.05rem;
-  color: white;
-  font-weight: 700;
-  padding: 0.4rem 1.2rem;
-  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
-  box-shadow: 0 4px 12px rgba(230, 126, 34, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
-}
-
-/* 添加柔和的发光效果 */
-.history-item::after {
-  content: "";
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
-  border-radius: 12px;
-  z-index: -2;
-  opacity: 0;
-  filter: blur(6px);
-  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: scale(1.02);
-}
-
-.history-item.highlight::after {
-  opacity: 0.08;
-  animation: gentleGlow 3s ease-in-out infinite;
-}
-
-@keyframes gentleGlow {
-  0%,
-  100% {
-    opacity: 0.08;
-    transform: scale(1.02);
-  }
-  50% {
-    opacity: 0.12;
-    transform: scale(1.03);
-  }
-}
-
-/* 普通状态的样式保持不变 */
 .history-name {
   font-size: 1.1rem;
   color: #2c3e50;
-  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.history-item.highlight .history-name {
+  font-weight: 600;
+  color: #2c3e50;
 }
 
 .history-score {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.8rem;
 }
 
 .history-score .score {
   font-size: 1.1rem;
-  font-weight: bold;
+  font-weight: 500;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+}
+
+.history-item.highlight .history-score .score {
+  font-weight: 600;
   color: #2c3e50;
 }
 
 .history-score .level {
-  font-size: 1rem;
-  color: #3498db;
-  font-weight: 600;
-  padding: 0.3rem 0.8rem;
+  font-size: 0.9rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
   background: rgba(52, 152, 219, 0.1);
-  border-radius: 12px;
+  color: #3498db;
+  transition: all 0.3s ease;
+}
+
+.history-item.highlight .history-score .level {
+  background: rgba(52, 152, 219, 0.2);
+  font-weight: 500;
+  color: #2980b9;
+}
+
+@keyframes gentleGlow {
+  0% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+  100% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .error-message {
